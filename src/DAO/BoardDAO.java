@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class BoardDAO {
 	@SuppressWarnings("unchecked")
@@ -50,4 +51,47 @@ public class BoardDAO {
 		}
 		return jsonArray;
 	}
+	
+	public String insertBoard(JSONObject board) throws ClassNotFoundException, ParseException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONObject jsonObject = new JSONObject();
+		String rst = "success";
+
+		try {
+			conn = DBConnection.getConnection();
+
+				String sql = "insert INTO board(board_title, board_ctnt, board_tag, board_reg_date, board_reg_user)"
+						+ "values (?, ?, ?, ?, ?)";
+
+				pstmt = conn.prepareStatement(sql);
+
+				pstmt.setString(1, (board.get("board_title")).toString());
+				pstmt.setString(2, (board.get("board_ctnt")).toString());
+				pstmt.setString(3, (board.get("board_tag")).toString());
+				pstmt.setString(4, (board.get("board_reg_date")).toString());
+				pstmt.setString(5, (board.get("board_reg_user")).toString());
+		
+				pstmt.executeUpdate();
+
+		} catch (SQLException sqle) {
+			System.out.println("sql err : " + sqle.getMessage());
+			rst = "fail";
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				rst = "fail";
+			}
+		}
+		return rst;
+	}
+
 }

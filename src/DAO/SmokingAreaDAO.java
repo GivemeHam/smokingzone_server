@@ -143,5 +143,42 @@ public class SmokingAreaDAO {
 		}
 		return jsonArray;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject selectMinDistanceLocation(double lat, double lng) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONObject jsonObject =  new JSONObject();
+
+		try {
+			String sql = "SET @pt1 = point(" + lng + ", "+ lat + ");\r\n" + 
+					"SET @pt2 = point(@lon2, @lat2);"
+					+ "select smoking_area_no, smoking_area_lat, smoking_area_lng from smoking_area";
+
+			conn = DBConnection.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				jsonObject.put("smoking_area_no", rs.getString("smoking_area_no"));
+				jsonObject.put("smoking_area_lat", rs.getString("smoking_area_lat"));
+				jsonObject.put("smoking_area_lng", rs.getString("smoking_area_lng"));
+			}
+		} catch (SQLException sqle) {
+			System.out.println("sql err : " + sqle.getMessage());
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return jsonObject;
+	}
 
 }
