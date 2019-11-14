@@ -9,8 +9,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import Util.Util;
+
 public class SmokingAreaDAO {
 	
+	Util util = new Util();
 	public String insertSmokingArea(JSONObject smokingArea) throws ClassNotFoundException, ParseException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -123,9 +126,12 @@ public class SmokingAreaDAO {
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				rs.getString("smoking_area_no");
-				rs.getString("smoking_area_lat");
-				rs.getString("smoking_area_lng");
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("smoking_area_no",rs.getString("smoking_area_no"));
+				jsonObject.put("smoking_area_lat",rs.getString("smoking_area_lat"));
+				jsonObject.put("smoking_area_lng",rs.getString("smoking_area_lng"));
+				jsonArray.add(jsonObject);
+				jsonObject = null;
 			}
 		} catch (SQLException sqle) {
 			System.out.println("sql err : " + sqle.getMessage());
@@ -145,16 +151,18 @@ public class SmokingAreaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public JSONObject selectMinDistanceLocation(double lat, double lng) throws ClassNotFoundException {
+	public JSONObject selectMinDistanceLocation(String s_lat, String s_lng) throws ClassNotFoundException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		JSONObject jsonObject =  new JSONObject();
+		double lat = Double.parseDouble(s_lat);
+		double lng = Double.parseDouble(s_lng);
 
+		JSONArray smokingAreaLocations = selectSmokingAreaLocation();
+		int MinDistanceSmokingAreaNo = MinDistanceLocation(smokingAreaLocations, lat, lng);
 		try {
-			String sql = "SET @pt1 = point(" + lng + ", "+ lat + ");\r\n" + 
-					"SET @pt2 = point(@lon2, @lat2);"
-					+ "select smoking_area_no, smoking_area_lat, smoking_area_lng from smoking_area";
+			String sql = "select smoking_area_no, smoking_area_lat, smoking_area_lng from smoking_area WHERE smoking_area_no =" + MinDistanceSmokingAreaNo;
 
 			conn = DBConnection.getConnection();
 			pstmt = conn.prepareStatement(sql);
@@ -179,6 +187,22 @@ public class SmokingAreaDAO {
 			}
 		}
 		return jsonObject;
+	}
+	public int MinDistanceLocation(JSONArray jsonArray,double lat, double lng) {
+		double min = 999999;
+		int min_no = 0;
+		
+		for(int i=0; i<jsonArray.size(); i++) {
+			JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+			
+			double distance = util.distance(lat,lng,Double.parseDouble(jsonObject.get("smoking_area_lng").toString()),Double.parseDouble(jsonObject.get("smoking_area_lng").toString()),"kilometer");
+			if(min > distance) {
+				min = distance;
+				min_no = Integer.parseInt(jsonObject.get("smoking_area_no").toString());
+				
+			}
+		}
+		return min_no;
 	}
 
 }
