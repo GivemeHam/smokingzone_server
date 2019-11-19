@@ -56,28 +56,27 @@ public class BoardDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		JSONObject jsonObject = new JSONObject();
 		String rst = "success";
 
 		try {
 			conn = DBConnection.getConnection();
 
 				String sql = "insert INTO board(board_title, board_ctnt, board_tag, board_reg_date, board_reg_user)"
-						+ "values (?, ?, ?, ?, ?)";
+						+ "values (?, ?, ?, NOW(), ?)";
 
 				pstmt = conn.prepareStatement(sql);
 
-				pstmt.setString(1, (board.get("board_title")).toString());
-				pstmt.setString(2, (board.get("board_ctnt")).toString());
-				pstmt.setString(3, (board.get("board_tag")).toString());
-				pstmt.setString(4, (board.get("board_reg_date")).toString());
-				pstmt.setString(5, (board.get("board_reg_user")).toString());
+				pstmt.setString(1, (board.get("title")).toString());
+				pstmt.setString(2, (board.get("ctnt")).toString());
+				pstmt.setString(3, (board.get("tag")).toString());
+				//pstmt.setString(4, (board.get("reg_date")).toString());
+				pstmt.setString(4, (board.get("reg_user")).toString());
 		
 				pstmt.executeUpdate();
 
 		} catch (SQLException sqle) {
 			System.out.println("sql err : " + sqle.getMessage());
-			rst = "fail";
+			rst = sqle.getMessage();
 		} finally {
 			try {
 				if (pstmt != null)

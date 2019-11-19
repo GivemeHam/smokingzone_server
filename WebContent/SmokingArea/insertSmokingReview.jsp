@@ -5,7 +5,7 @@
 <%@page import="DAO.SmokingAreaDAO"%>
 <%
 	request.setCharacterEncoding("UTF-8");
-  	String json = request.getParameter("json_smokingAreaValue");
+  	String json = request.getParameter("json_smokingReviewValue");	
    
    	JSONParser parser = new JSONParser();
    	Object obj = parser.parse(json);
@@ -13,6 +13,6 @@
    	
    	SmokingAreaDAO smokingArea = new SmokingAreaDAO();
 	
-   	String rst = smokingArea.insertSmokingArea(jsonObj);
+   	String rst = smokingArea.insertSmokingReview(jsonObj);
     out.println(rst);	
 %>

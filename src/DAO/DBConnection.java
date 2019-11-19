@@ -10,6 +10,7 @@ public class DBConnection {
 
 		Connection conn = null;
 		try {
+			//String user = "user";
 			String user = "root"; // window
 			String pw = "513246";
 			String url = "jdbc:mysql://localhost:3306/smoke";

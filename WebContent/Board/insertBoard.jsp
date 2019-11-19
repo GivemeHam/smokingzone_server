@@ -6,13 +6,14 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	String get_param = request.getParameter("board_param");
-  	
-  	
+//	String get_param = "{\"title\":\"주용\",\"reg_date\":\"2019/10/10 15:28:19\",\"tag\":\"test\",\"ctnt\":\"test\",\"reg_user\":\"asd\"}";
+	
   	System.out.println("get_param : " + get_param);
    	JSONParser parser = new JSONParser();
    	Object obj = parser.parse(get_param);
    	JSONObject jsonObj = (JSONObject)obj;
 
+   	System.out.println("test1 : " + jsonObj);
    	BoardDAO boardDAO = new BoardDAO();
    	String rst = boardDAO.insertBoard(jsonObj);
    	
