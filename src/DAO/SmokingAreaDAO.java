@@ -13,6 +13,10 @@ import Util.Util;
 
 public class SmokingAreaDAO {
 
+	public String Log(String data) {
+		System.out.println("data : " + data);
+		return data;
+	}
 	Util util = new Util();
 
 	public String insertSmokingArea(JSONObject smokingArea) throws ClassNotFoundException, ParseException {
@@ -114,6 +118,48 @@ public class SmokingAreaDAO {
 		}
 		return jsonArray;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONArray selectSmokingAreaReivew(String smoking_no) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONArray jsonArray = new JSONArray();
+
+		try {
+			String sql = "select * from smoking_review WHERE smoking_review_smoking_area_no = " + smoking_no;
+
+			conn = DBConnection.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("review_no", rs.getString("smoking_review_review_no"));
+				jsonObject.put("reg_user", rs.getString("smoking_review_reg_user"));
+				jsonObject.put("reg_date", rs.getString("smoking_review_reg_date"));
+				jsonObject.put("ctnt", rs.getString("smoking_review_ctnt"));
+				jsonObject.put("point", rs.getString("smoking_review_point"));
+				jsonArray.add(jsonObject);
+				jsonObject = null;
+
+			}
+		} catch (SQLException sqle) {
+			System.out.println("sql err : " + sqle.getMessage());
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return jsonArray;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public JSONArray selectSmokingAreaLocation() throws ClassNotFoundException {
@@ -190,6 +236,7 @@ public class SmokingAreaDAO {
 				System.out.println(e.getMessage());
 			}
 		}
+		System.out.println("test : " + jsonObject);
 		return jsonObject;
 	}
 
@@ -199,13 +246,16 @@ public class SmokingAreaDAO {
 
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+			
+			//System.out.println(jsonObject.get("smoking_area_no").toString() + " : " + jsonObject.get("smoking_area_lat").toString() + " / " + jsonObject.get("smoking_area_lng").toString());
 
-			double distance = util.distance(lat, lng, Double.parseDouble(jsonObject.get("smoking_area_lng").toString()),
+			double distance = util.distance(lat, lng, Double.parseDouble(jsonObject.get("smoking_area_lat").toString()),
 					Double.parseDouble(jsonObject.get("smoking_area_lng").toString()), "kilometer");
+
 			if (min > distance) {
 				min = distance;
+				//System.out.println("distance : " + distance);
 				min_no = Integer.parseInt(jsonObject.get("smoking_area_no").toString());
-
 			}
 		}
 		return min_no;
@@ -321,8 +371,7 @@ public class SmokingAreaDAO {
 		}
 		return rst;
 	}
-	
-	
+
 	public String insertSmokingReport(JSONObject smokingReport) throws ClassNotFoundException, ParseException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -362,7 +411,7 @@ public class SmokingAreaDAO {
 		updateReport(smokingReport.get("report_smoking_area_no").toString());
 		return rst;
 	}
-	
+
 	public String updateReport(String smokingArea_no) throws ClassNotFoundException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -433,6 +482,4 @@ public class SmokingAreaDAO {
 		return rst;
 	}
 
-
-	
 }

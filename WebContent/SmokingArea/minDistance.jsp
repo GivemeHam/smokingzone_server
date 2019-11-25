@@ -8,7 +8,7 @@
 
 	request.setCharacterEncoding("UTF-8");
 	String get_param = request.getParameter("currentlocation");
-	get_param = "{\"lat\":37.551293,\"lng\":127.072949}";
+	//get_param = "{\"lat\":37.551293,\"lng\":127.072949}";
 
 	//System.out.println("currentlocation : " + currentlocation);
 	JSONParser parser = new JSONParser();
@@ -17,9 +17,8 @@
 
 	//out.println("tt : " + jsonObj.get("lng").toString());
 	SmokingAreaDAO smokingDAO = new SmokingAreaDAO();
-
-	out.println(
-			smokingDAO.selectMinDistanceLocation(jsonObj.get("lat").toString(), jsonObj.get("lng").toString()));
+	String NearSmokingArea_info = smokingDAO.selectMinDistanceLocation(jsonObj.get("lat").toString(), jsonObj.get("lng").toString()).toString();
+	out.println(NearSmokingArea_info);
 	//더미 값 일단 출력
 	//	out.println("{\"lat\":37.551293,\"lng\":127.072949}");
 %>
