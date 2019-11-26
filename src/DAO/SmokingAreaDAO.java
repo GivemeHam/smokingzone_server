@@ -276,7 +276,7 @@ public class SmokingAreaDAO {
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, (smokingReview.get("smoking_area_no")).toString());
+			pstmt.setInt(1, Integer.parseInt(smokingReview.get("smoking_area_no").toString()));
 			pstmt.setString(2, (smokingReview.get("smoking_review_reg_user")).toString());
 			pstmt.setString(3, (smokingReview.get("smoking_review_ctnt")).toString());
 			pstmt.setString(4, (smokingReview.get("smoking_review_point")).toString());
@@ -316,7 +316,7 @@ public class SmokingAreaDAO {
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, smokingArea_point);
-			pstmt.setString(2, smokingArea_no);
+			pstmt.setInt(2, Integer.parseInt(smokingArea_no));
 			pstmt.executeUpdate();
 
 		} catch (SQLException sqle) {
@@ -348,6 +348,7 @@ public class SmokingAreaDAO {
 		try {
 			String sql = "select avg(smoking_review_point) as smoking_area_point  from smoking_review where smoking_review_smoking_area_no = "
 					+ smokingArea_no;
+			System.out.println("sql : " + sql);
 			conn = DBConnection.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -369,6 +370,7 @@ public class SmokingAreaDAO {
 				System.out.println(e.getMessage());
 			}
 		}
+		System.out.println("rst point : " + rst);
 		return rst;
 	}
 
@@ -382,7 +384,7 @@ public class SmokingAreaDAO {
 			conn = DBConnection.getConnection();
 
 			String sql = "insert INTO smoking_report(report_title, report_ctnt, report_user, report_smoking_area_no, report_reg_date)"
-					+ "values (?, ?, NOW(), ?, ?, NOW())";
+					+ "values (?, ?, ?, ?, NOW())";
 
 			pstmt = conn.prepareStatement(sql);
 

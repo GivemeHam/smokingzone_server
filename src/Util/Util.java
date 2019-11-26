@@ -1,5 +1,13 @@
 package Util;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
+
+
 public class Util {
 	public static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
         
@@ -29,4 +37,5 @@ public class Util {
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
+ 
 }

@@ -143,11 +143,11 @@ public class BoardDAO {
 			conn = DBConnection.getConnection();
 
 			String sql = "insert INTO board_review(board_review_board_no, board_review_reg_user, board_review_reg_date, board_review_ctnt)"
-					+ "values (?, ?, NOW(), ?, ?)";
+					+ "values (?, ?, NOW(), ?)";
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, (boardReview.get("board_area_no")).toString());
+			pstmt.setInt(1, Integer.parseInt((boardReview.get("board_area_no")).toString()));
 			pstmt.setString(2, (boardReview.get("board_review_reg_user")).toString());
 			pstmt.setString(3, (boardReview.get("board_review_ctnt")).toString());
 			pstmt.executeUpdate();
