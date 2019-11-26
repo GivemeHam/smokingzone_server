@@ -422,13 +422,11 @@ public class SmokingAreaDAO {
 
 		try {
 			conn = DBConnection.getConnection();
-			String smokingArea_report = selectSmokingAreaPoint(smokingArea_no);
-			String sql = "UPDATE smoking_area SET smoking_area_report = ? WHERE smoking_area_no = ?";
+			String sql = "UPDATE smoking_area SET smoking_area_report = smoking_area_report+1 WHERE smoking_area_no = ?";
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, smokingArea_report);
-			pstmt.setString(2, smokingArea_no);
+			pstmt.setString(1, smokingArea_no);
 			pstmt.executeUpdate();
 
 		} catch (SQLException sqle) {
