@@ -139,6 +139,7 @@ public class BoardDAO {
 		ResultSet rs = null;
 		String rst = "success";
 
+		System.out.println(boardReview);
 		try {
 			conn = DBConnection.getConnection();
 
